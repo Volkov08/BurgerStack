@@ -1,0 +1,53 @@
+@import url("https://fonts.googleapis.com/css2?family=Micro+5&display=swap");
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+#mainCanvas {
+    margin: 0 auto;
+    display: block;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    opacity: 1;
+    background: url("assets/Background.png");
+}
+#debugCanvas {
+    margin: 0 auto;
+    display: block;
+    z-index: -1;
+    position: absolute;
+    opacity: 1;
+    top: 0;
+}
+#score {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    text-align: right;
+    z-index: 2;
+    color: rgb(255, 200, 0);
+
+    font-family: "Micro 5", serif;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-right: 10px;
+    padding-left: 2em;
+}
+#scoreValue {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 10em;
+    transition: color 0.5s;
+}
+#scoreCombo {
+    margin-top: -0.5em;
+    margin-bottom: 0;
+    font-size: 5em;
+}
+#scoreValue.blink {
+    color: red;
+    transition: color 0.05s;
+}

@@ -59,12 +59,13 @@ class BurgerStack {
             if (
                 pair.bodyB.label == "Ingredient" ||
                 pair.bodyB.label == "MultiIngredient" ||
-                pair.bodyA.label == "Plate"
+                pair.bodyB.label == "Plate"
             ) {
                 if (
                     pair.bodyA.label == "Countertop" &&
-                    pair.bodyA.label == "Plate"
+                    pair.bodyB.label != "Plate"
                 ) {
+                    console.log(pair.bodyA.label, pair.bodyB.label);
                     this.loss();
                 }
                 let topFrame = this.stackFrames[0];

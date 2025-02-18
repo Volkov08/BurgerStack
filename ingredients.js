@@ -346,6 +346,7 @@ class Plate extends Ingredient {
         this.width = 22 * 5;
         this.height = 4 * 5;
         this.options.friction = 1;
+        this.options.label = "Plate";
         this.value = 69;
     }
     static getRarity() {

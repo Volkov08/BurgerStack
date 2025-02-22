@@ -1,10 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Micro+5&display=swap");
 
 body {
-    font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
+    font-family: "Micro 5", serif;
+    font-size: min(50px, 7vw);
 }
 #mainCanvas {
     margin: 0 auto;
@@ -30,24 +31,68 @@ body {
     text-align: right;
     z-index: 2;
     color: rgb(255, 200, 0);
-
-    font-family: "Micro 5", serif;
     background-color: rgba(0, 0, 0, 0.5);
     padding-right: 10px;
-    padding-left: 2em;
+    padding-left: 0.5em;
 }
 #scoreValue {
     margin-top: 0;
     margin-bottom: 0;
-    font-size: 10em;
+    font-size: 2em;
     transition: color 0.5s;
 }
 #scoreCombo {
     margin-top: -0.5em;
     margin-bottom: 0;
-    font-size: 5em;
+    font-size: 1em;
 }
 #scoreValue.blink {
     color: red;
     transition: color 0.05s;
+}
+
+#gameOverScreen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    z-index: 999;
+    color: rgb(255, 200, 0);
+
+    font-family: "Micro 5", serif;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+#notification {
+    position: absolute;
+    bottom: 0px;
+    width: 50vw;
+    min-width: 200px;
+    max-width: 500px;
+    text-align: center;
+    z-index: 998;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: rgb(255, 200, 0);
+    padding: 0.5em;
+    margin: 10px;
+    opacity: 0;
+    transition: opacity 1.5s;
+}
+#notification.show {
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+button {
+    font-family: "Micro 5", serif;
+    font-size: 1em;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: rgb(255, 200, 0);
+    border: none;
+    padding: 0.5em 1em;
+    margin: 0.5em;
+    cursor: pointer;
+}
+button:hover {
+    color: red;
 }

@@ -16,6 +16,8 @@ const loadSprites = async () => {
         window.createImageBitmap(assets, 0, 34, 18, 2),
         window.createImageBitmap(assets, 0, 36, 18, 5),
         window.createImageBitmap(assets, 16, 12, 16, 4),
+        window.createImageBitmap(assets, 32, 0, 16, 16),
+        window.createImageBitmap(assets, 32, 16, 16, 8),
     ]).then((bitmaps) => {
         sprites.Empty = bitmaps[0];
         sprites.Bun0 = bitmaps[1];
@@ -30,6 +32,8 @@ const loadSprites = async () => {
         sprites.Cheese = bitmaps[10];
         sprites.Bacon = bitmaps[11];
         sprites.Toast = bitmaps[12];
+        sprites.Countertop1 = bitmaps[13];
+        sprites.Countertop2 = bitmaps[14];
     });
 };
 
@@ -291,6 +295,7 @@ class Patty extends Ingredient {
         this.width = 16 * 5;
         this.height = 6 * 5;
         this.value = 1;
+        this.isPatty = true;
     }
 }
 class Lettuce extends Ingredient {
@@ -376,6 +381,7 @@ class Bacon extends Ingredient {
         this.width = 18 * 5;
         this.height = 5 * 5;
         this.value = 10;
+        this.isBacon = true;
     }
     static getRarity() {
         if (combo > 8) return Math.max(8 - combo / 10, 5);
@@ -390,7 +396,7 @@ class Toast extends Bun {
         super(world, 0);
         this.sprite = sprites.Toast;
         this.height = 4 * 5;
-        this.value = 0;
+        this.value = 10;
         this.isToast = true;
     }
     static getRarity(context) {

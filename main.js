@@ -80,10 +80,10 @@ function processCombo(comboVal) {
 
 var Burger;
 const lerp = (a, b, c) => a + (b - a) * c;
+let camyTarget = plateHeight;
 function draw() {
-    cam.y = Math.min(
-        lerp(
-            cam.y,
+    if (Burger.holding) {
+        camyTarget = Math.min(
             Math.max(
                 Burger.lowestMoving
                     ? Burger.lowestMoving.getCenter().y
@@ -92,10 +92,10 @@ function draw() {
             ) -
                 dropHeight -
                 100,
-            0.05
-        ),
-        0
-    );
+            0
+        );
+    }
+    cam.y = lerp(cam.y, camyTarget, 0.05);
     //cam.x = lerp(cam.x, Burger.holdingParams.center - width / 2, 0.001);
     if (debugRender) {
         Render.lookAt(render, {
@@ -105,6 +105,24 @@ function draw() {
     }
     ctx.clearRect(0, 0, width, height);
     Burger.draw(ctx, cam);
+
+    //draw countertop
+    for (let i = 0; i < width; i += 16 * 5) {
+        for (
+            let j = plateHeight - cam.y - 10 + 4 * 5;
+            j < height;
+            j += 16 * 5 - 0.5
+        ) {
+            ctx.drawImage(sprites.Countertop1, i, j, 16 * 5, 16 * 5);
+        }
+        ctx.drawImage(
+            sprites.Countertop2,
+            i,
+            plateHeight - cam.y - 10,
+            16 * 5,
+            8 * 5
+        );
+    }
 }
 
 function frame() {
@@ -124,17 +142,61 @@ Composite.add(
         label: "Countertop",
     })
 );
-
+document.gameOverScreen = document.getElementById("gameOverScreen");
 function gameOver() {
     console.log("Game Over");
-    alert("Game Over");
+    document.gameOverScreen.style.display = "block";
+    document.getElementById("finalScore").innerText =
+        Math.round(score * 10) / 10;
+    let highScore = window.localStorage.getItem("highScore");
+    if (highScore == null || score > highScore) {
+        window.localStorage.setItem("highScore", score);
+        highScore = score;
+    }
+    document.getElementById("highScore").innerText = highScore;
+    let pattyCount = 0;
+    Burger.stackFrames.forEach((frame) => {
+        frame.stack.forEach((ingredient) => {
+            if (ingredient.isPatty) {
+                pattyCount++;
+            } else if (ingredient.isBacon) {
+                pattyCount += 0.5;
+            }
+        });
+    });
+    document.getElementById("totalPatty").innerText =
+        Math.floor(pattyCount * 200) + " g";
+}
+document.getElementById("restartButton").addEventListener("click", restart);
+function restart() {
     window.location.reload();
 }
-function discover(name, description, value, sprite) {
-    alert(
-        `You discovered a new ingredient!\n\n${name}:\n${description}\n\nValue: ${value}`
-    );
+document.getElementById("reviewButton").addEventListener("click", () => {
+    document.gameOverScreen.style.display = "none";
+});
+
+let noteFadeTimeout = null;
+function discover(name, description, value, sprite, showextra = true) {
+    document.getElementById("noteHeading").innerText = name;
+    document.getElementById("noteText").innerText = `${
+        showextra ? "You discovered a new ingredient!\n\n" : ""
+    } ${description}\n\nValue: ${value}`;
+    let imgContext = document.getElementById("noteImage").getContext("2d");
+    imgContext.imageSmoothingEnabled = false;
+    imgContext.clearRect(0, 0, 100, 100);
+    imgContext.drawImage(sprite, 0, 0, sprite.width * 5, sprite.height * 5);
+    document.getElementById("notification").classList.add("show");
+    if (noteFadeTimeout != null) window.clearTimeout(noteFadeTimeout);
+    noteFadeTimeout = window.setTimeout(() => {
+        document.getElementById("notification").classList.remove("show");
+    }, 5000);
 }
+
+window.addEventListener("keydown", (e) => {
+    if (e.key == "w") camyTarget -= 32;
+    if (e.key == "s") camyTarget += 32;
+    camyTarget = Math.min(camyTarget, plateHeight);
+});
 
 assets.onload = () => {
     loadSprites().then(() => {
@@ -143,7 +205,7 @@ assets.onload = () => {
         updateWindowSize();
         window.requestAnimationFrame(frame);
         window.addEventListener("resize", updateWindowSize);
-        window.addEventListener("click", () => {
+        canv.addEventListener("click", () => {
             Burger.drop();
         });
         window.addEventListener("keydown", (e) => {

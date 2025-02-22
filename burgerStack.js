@@ -126,8 +126,15 @@ class BurgerStack {
         ) {
             this.generateIngredient();
         }
-        this.stackTop = this.stackFrames[0].getTopIngredient();
+        this.stackTop = this.getTopIngredient();
         this.lowestMoving = this.stackFrames[0].getLowestMoving();
+    }
+    getTopIngredient() {
+        for (let frame of this.stackFrames) {
+            let top = frame.getTopIngredient();
+            if (top) return top;
+        }
+        return this.stackFrames[this.stackFrames.length - 1].bottom;
     }
     draw(ctx, cam) {
         for (let frame of this.stackFrames) {
@@ -137,6 +144,13 @@ class BurgerStack {
     loss() {
         for (let i = 0; i < this.stackFrames.length; i++) {
             if (this.stackFrames[i].bottom.isToast) {
+                discover(
+                    "Another Chance!",
+                    "The Mighty TOAST has saved you!",
+                    "delicious",
+                    sprites.Toast,
+                    false
+                );
                 this.resetTo(i);
                 return;
             }
@@ -154,11 +168,14 @@ class BurgerStack {
     }
     resetTo(i) {
         combo = 0;
+        if (this.holding != null) {
+            this.holding.delete();
+            this.holding = null;
+        }
         for (let k = 0; k <= i; k++) {
             this.stackFrames.shift().delete();
         }
-        this.stackTop = this.stackTop || this.stackFrames[0].getTopIngredient();
-        this.holding = null;
+        this.stackTop = this.getTopIngredient();
     }
     drop() {
         if (!this.holding) return;
@@ -170,6 +187,11 @@ class BurgerStack {
         if (this.holding.isEmpty()) {
             this.holding = null;
         }
+    }
+    delete() {
+        this.stackFrames.forEach((frame) => {
+            frame.delete();
+        });
     }
     stop() {
         while (this.holding) this.drop();
@@ -216,14 +238,10 @@ class BurgerStack {
 
         if (!this.holding) return;
 
-        this.holdingParams.speed = lerp(
-            2400,
-            1200,
-            Math.min(1, score / 2000) ** 2
-        );
-        this.holdingParams.dist = lerp(40, 120, Math.min(1, score / 2000) ** 2);
+        this.holdingParams.speed = lerp(2400, 1200, Math.min(1, score / 1500));
+        this.holdingParams.dist = lerp(40, 120, Math.min(1, score / 1500));
         this.holdingParams.offset =
-            (Math.random() - 0.5) * Math.min(2, score / 1000);
+            (Math.random() - 0.5) * Math.min(2, score / 400);
 
         this.holdingParams.center = this.stackTop.getCenter().x;
         this.holding.createBody(
